@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QMenu>
-#include<QListWidget>
+#include<QTableWidget>
 #include<QMap>
 
 #include"executor.h"
@@ -33,10 +33,14 @@ public slots:
     void DelButtonClicked();
     void EvalButtonClicked();
 
+    void clearResult();
+    void deleteResult();
+
 private slots:
     void on_outputList_customContextMenuRequested(const QPoint &pos);
 
-    void on_outputList_itemDoubleClicked(QListWidgetItem *item);
+
+    void on_outputList_itemDoubleClicked(QTableWidgetItem *item);
 
 private:
     Ui::MainWindow *ui;
@@ -45,8 +49,9 @@ private:
 
     QMenu *m_outRight;
     QAction *m_outTrigger;
+    QAction *m_outErase;
 
-   // QMap< QString,QString >
+    QRegExp lambdaReg;
 };
 
 #endif // MAINWINDOW_H

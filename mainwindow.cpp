@@ -2,7 +2,9 @@
 #include "ui_mainwindow.h"
 
 #include<QMessagebox>
+#include<QHeaderView>
 
+#include<QScrollBar>
 
 #include<QtDebug>
 
@@ -28,13 +30,19 @@ const static QMap<QString,QString> helpNote = {
 
 
     {"sin(","sin(radius)"},
-    {"cos(","cos(radius"},
-    {"tan(","tan(radius"},
-    {"cot(","cot(radius"},
+    {"cos(","cos(radius)"},
+    {"tan(","tan(radius)"},
+    {"asin(","asin(float)"},
+    {"acos(","acos(float)"},
+    {"atan(","atan(float)"},
+
     {"sinh(","sinh(radius)"},
-    {"cosh(","cosh(radius"},
-    {"tanh(","tanh(radius"},
-    {"coth(","coth(radius"},
+    {"cosh(","cosh(radius)"},
+    {"tanh(","tanh(radius)"},
+    {"asinh(","asinh(float)"},
+    {"acosh(","acosh(float)"},
+    {"atanh(","atanh(float)"},
+
     {"log(","log(a,b)"},
     {"lg(","lg(b)  equals to log(10,b)"},
     {"ln(", "ln(b)  equals to log(e,b)"},
@@ -47,8 +55,8 @@ const static QMap<QString,QString> helpNote = {
     {"¡Ò(", "¡Ò(¦Ë(x),low,high,n=1000)"},
     {"¡Æ(", "¡Æ(¦Ë(x),low,high)"},
     {"£ä£¯£ä£ø(","d/dx(¦Ë(x),x0)  the gradient of function ¦Ë at x=x0"},
-    {"¦Ë.x->(","¦Ë.x->(x+3)  represents a lambda function"}
-
+    {"¦Ë(x){}","¦Ë(x){3*x;}  a function."},
+    {"Advance","Enter Advance Mode"}
 };
 
 
@@ -74,12 +82,22 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
+    ui->outputList->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->outputList->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->outputList->verticalHeader()->setVisible(false);
+    ui->outputList->setColumnWidth(0,500);
+    ui->outputList->setColumnWidth(1,50);
+    ui->outputList->setSelectionBehavior(QAbstractItemView::SelectRows);
+
 
     m_outRight = new QMenu(this);
     m_outTrigger = new QAction("ÇåÆÁ",this);
+    m_outErase = new QAction("É¾³ý",this);
     m_outRight->addAction(m_outTrigger);
+    m_outRight->addAction(m_outErase);
 
-    QObject::connect( m_outTrigger, SIGNAL(triggered()),ui->outputList,SLOT(clear()));
+    QObject::connect( m_outTrigger, SIGNAL(triggered()),this, SLOT(clearResult())  );
+    QObject::connect( m_outErase, SIGNAL(triggered()),this,SLOT(deleteResult())  );
 
     //Del button
     QObject::connect( ui->pushButton_del, SIGNAL(clicked()), this, SLOT(DelButtonClicked()));
@@ -102,14 +120,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Math function
     QObject::connect( ui->pushButton_sin, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
+    QObject::connect( ui->pushButton_asin, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
     QObject::connect( ui->pushButton_sinh, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
+    QObject::connect( ui->pushButton_asinh, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
     QObject::connect( ui->pushButton_cos, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
+    QObject::connect( ui->pushButton_acos, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
     QObject::connect( ui->pushButton_cosh, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
+    QObject::connect( ui->pushButton_acosh, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
     QObject::connect( ui->pushButton_tan, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
+    QObject::connect( ui->pushButton_atan, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
     QObject::connect( ui->pushButton_tanh, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
+    QObject::connect( ui->pushButton_atanh, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
 
-    QObject::connect( ui->pushButton_cot, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
-    QObject::connect( ui->pushButton_coth, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
+
     QObject::connect( ui->pushButton_log, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
     QObject::connect( ui->pushButton_ln, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
     QObject::connect( ui->pushButton_lg, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
@@ -176,8 +199,10 @@ void MainWindow::DelButtonClicked() {
 
 // all buttons should add their text onto the line
 // except for del, eval, ac, etc..
+
 void MainWindow::buttonClicked() {
     auto bt = dynamic_cast<QPushButton*> ( QObject::sender() );
+
     QString text = bt->text();
     ui->inputLine->insert(text);
     ui->inputLine->setFocus();
@@ -194,7 +219,35 @@ void MainWindow::buttonClicked() {
 
 
 void MainWindow::EvalButtonClicked() {
+    QString evalLine = ui->inputLine->text();
+    evalLine = evalLine.trimmed();
+    if(evalLine=="") return;
+    evalLine.replace("¡Ò","_Calculus");
+    evalLine.replace("£ä£¯£ä£ø","_Derivative");
+    evalLine.replace("¦Ë","function");
+    evalLine.replace("{","{return ");
+    evalLine.replace("¦Ð","_pi");
+    evalLine.replace("£å","_e");
+    auto temp=m_exec->exec(evalLine);
+    QString printAns;
+    if( temp.isError() ) {
+        printAns="Error!";
+    }
+    else {
+        printAns.setNum(temp.toNumber(),'g');
+        m_exec->assign("Ans",temp);
+    }
+    int nowRowCount = ui->outputList->rowCount();
 
+    ui->outputList->setRowCount(++nowRowCount);
+
+    ui->outputList->setItem(nowRowCount-1,0,new QTableWidgetItem(ui->inputLine->text()));
+    ui->outputList->setItem(nowRowCount-1,1,new QTableWidgetItem(printAns));
+
+    ui->outputList->setCurrentCell(nowRowCount-1,0);
+
+    m_exec->initFunc();
+    ui->inputLine->selectAll();
 }
 
 
@@ -210,6 +263,20 @@ void MainWindow::on_outputList_customContextMenuRequested(const QPoint &pos) {
     m_outRight->show();
 }
 
-void MainWindow::on_outputList_itemDoubleClicked(QListWidgetItem *item) {
+
+void MainWindow::on_outputList_itemDoubleClicked(QTableWidgetItem *item)
+{
+    if(item->text()=="Error!") return;
     ui->inputLine->setText( item->text() );
+}
+
+void MainWindow::clearResult() {
+    ui->outputList->setRowCount(0);
+    ui->outputList->clearContents();
+}
+void MainWindow::deleteResult() {
+    auto temp=ui->outputList->currentRow();
+    if(temp!=-1) {
+        ui->outputList->removeRow(temp);
+    }
 }

@@ -13,6 +13,7 @@ Executor::Executor() {
 		eng->globalObject().setProperty(a,0);
 	}
 	
+    initFunc();
 
 }
 
@@ -32,6 +33,8 @@ Executor::Executor( QMap<QString,QJSValue> &env) {
         eng->globalObject().setProperty(a,0);
     }
 
+    initFunc();
+
 }
 
 Executor::~Executor() {
@@ -39,16 +42,27 @@ Executor::~Executor() {
 }
 
 
-QJSValue Executor::exec(QString &line) {
+QJSValue Executor::exec(QString line) {
     return eng->evaluate(line);
 }
 
 
-QJSValue Executor::getValue(QString &name) {
+QJSValue Executor::getValue(QString name) {
 	return eng->globalObject().property(name);
 }
 
 
-void Executor::assign(QString &name,QJSValue vl) {
+void Executor::assign(QString name,QJSValue vl) {
     eng->globalObject().setProperty(name,vl);
+}
+
+void Executor::initFunc() {
+    eng->evaluate("sin=Math.sin;sinh=Math.sinh;asin=Math.asin;asinh=Math.asinh;");
+    eng->evaluate("cos=Math.cos;cosh=Math.cosh;acos=Math.acos;aconh=Math.acosh;");
+    eng->evaluate("tan=Math.tan;tanh=Math.tanh;atan=Math.atan;atanh=Math.atanh;");
+    eng->evaluate("ln=Math.log;lg=Math.log10;");
+    eng->evaluate("function log(a,b) {return Math.log(b)/Math.log(a);}");
+    eng->evaluate("function _Calculus(func,low,high,n) { if(n==undefined) {n=1000;} sum=0; delt=(high-low)/n; for(var i=low;i<=high;i+=delt) { sum+= func(i)*delt; } return sum;}");
+    eng->evaluate("function _Derivative(func,low,high,n) { if(n==undefined) {n=1000;} sum=0; delt=(high-low)/n; for(var i=low;i<=high;i+=delt) { sum+= func(i)*delt; } return sum;}");
+    eng->evaluate("_pi=Math.PI;_e=Math.E;");
 }

@@ -10,11 +10,12 @@ public:
     Executor( QMap< QString, QJSValue> &env);
     ~Executor();
 
-    QJSValue exec(QString &line);
+    QJSValue exec(QString line);
 	
-	QJSValue getValue(QString &name);
+    QJSValue getValue(QString name);
 
-    void assign(QString &name,QJSValue vl);
+    void assign(QString name,QJSValue vl);
+    void initFunc();
 
 private:
     QJSEngine *eng;
