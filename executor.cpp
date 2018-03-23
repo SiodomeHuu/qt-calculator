@@ -62,7 +62,18 @@ void Executor::initFunc() {
     eng->evaluate("tan=Math.tan;tanh=Math.tanh;atan=Math.atan;atanh=Math.atanh;");
     eng->evaluate("ln=Math.log;lg=Math.log10;");
     eng->evaluate("function log(a,b) {return Math.log(b)/Math.log(a);}");
-    eng->evaluate("function _Calculus(func,low,high,n) { if(n==undefined) {n=1000;} sum=0; delt=(high-low)/n; for(var i=low;i<=high;i+=delt) { sum+= func(i)*delt; } return sum;}");
-    eng->evaluate("function _Derivative(func,low,high,n) { if(n==undefined) {n=1000;} sum=0; delt=(high-low)/n; for(var i=low;i<=high;i+=delt) { sum+= func(i)*delt; } return sum;}");
+    eng->evaluate("pow=Math.pow; function root(a,b) { return Math.pow(a,1/b); }");
+
+
+    eng->evaluate("function _Calculus(func,low,high,n) { if(typeof(func)!=\"function\") {return \"Need a function as first parameter.\";} if(n==undefined) {n=1000;} sum=0; delt=(high-low)/n; for(var i=low;i<=high;i+=delt) { sum+= func(i)*delt; } return sum;}");
+    eng->evaluate("\
+function _Derivative(func,x) {\
+    if(typeof(func)!=\"function\") {return \"Need a function as first parameter.\";}\
+    var delta=0.0001;\
+    fx2=func(x+delta);\
+    fx1=func(x-delta);\
+    return (fx2-fx1)/(2*delta);\
+}");
+    eng->evaluate("function _Sigma(func,low,high) { if(typeof(func)!=\"function\") {return \"Need a function as first parameter.\";} var sum=0; low=parseInt(low);high=parseInt(high); for(var i=low;i<=high;++i) {sum+=func(i);} return sum;}");
     eng->evaluate("_pi=Math.PI;_e=Math.E;");
 }

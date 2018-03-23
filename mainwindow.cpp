@@ -49,7 +49,7 @@ const static QMap<QString,QString> helpNote = {
     {"pow(", "pow(a,b)  a^b"},
     {"root(", "root(a,b)  equals to pow(a,1/b)"},
 
-    {"Assign("," Assign(a,b)  assign a to b, and return value b"},
+    {"<-"," _A<-100  assign 100 to _A, and return value 100"},
 
 
     {"¡Ò(", "¡Ò(¦Ë(x),low,high,n=1000)"},
@@ -86,7 +86,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->outputList->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->outputList->verticalHeader()->setVisible(false);
     ui->outputList->setColumnWidth(0,500);
-    ui->outputList->setColumnWidth(1,50);
+    ui->outputList->setColumnWidth(1,100);
     ui->outputList->setSelectionBehavior(QAbstractItemView::SelectRows);
 
 
@@ -98,6 +98,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect( m_outTrigger, SIGNAL(triggered()),this, SLOT(clearResult())  );
     QObject::connect( m_outErase, SIGNAL(triggered()),this,SLOT(deleteResult())  );
+
+    QObject::connect( ui->inputLine, SIGNAL(returnPressed()),this,SLOT(EvalButtonClicked()));
 
     //Del button
     QObject::connect( ui->pushButton_del, SIGNAL(clicked()), this, SLOT(DelButtonClicked()));
@@ -224,18 +226,25 @@ void MainWindow::EvalButtonClicked() {
     if(evalLine=="") return;
     evalLine.replace("¡Ò","_Calculus");
     evalLine.replace("£ä£¯£ä£ø","_Derivative");
+    evalLine.replace("¡Æ","_Sigma");
     evalLine.replace("¦Ë","function");
     evalLine.replace("{","{return ");
     evalLine.replace("¦Ð","_pi");
     evalLine.replace("£å","_e");
+    evalLine.replace("<-","=");
     auto temp=m_exec->exec(evalLine);
     QString printAns;
     if( temp.isError() ) {
         printAns="Error!";
     }
     else {
-        printAns.setNum(temp.toNumber(),'g');
-        m_exec->assign("Ans",temp);
+        if(temp.isString()) {
+            printAns=temp.toString();
+        }
+        else {
+            printAns.setNum(temp.toNumber(),'g');
+            m_exec->assign("Ans",temp);
+        }
     }
     int nowRowCount = ui->outputList->rowCount();
 

@@ -62,7 +62,7 @@
           <enum>Qt::TabFocus</enum>
          </property>
          <property name="text">
-          <string>Assign(</string>
+          <string>&lt;-</string>
          </property>
         </widget>
        </item>
