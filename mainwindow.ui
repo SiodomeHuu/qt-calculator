@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>707</width>
-    <height>486</height>
+    <width>745</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <widget class="QLineEdit" name="inputLine">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>120</y>
-      <width>651</width>
+      <width>731</width>
       <height>20</height>
      </rect>
     </property>
@@ -27,9 +27,9 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>150</y>
-      <width>651</width>
+      <width>731</width>
       <height>321</height>
      </rect>
     </property>
@@ -617,12 +617,12 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QPushButton" name="pushButton_advance">
+        <widget class="QPushButton" name="pushButton_nsolve">
          <property name="focusPolicy">
           <enum>Qt::TabFocus</enum>
          </property>
          <property name="text">
-          <string>Advance</string>
+          <string>NSolve(</string>
          </property>
         </widget>
        </item>
@@ -636,6 +636,16 @@
          </property>
         </widget>
        </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="pushButton_bsolve">
+         <property name="focusPolicy">
+          <enum>Qt::TabFocus</enum>
+         </property>
+         <property name="text">
+          <string>BSolve(</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
     </layout>
@@ -643,9 +653,9 @@
    <widget class="QTableWidget" name="outputList">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>10</y>
-      <width>651</width>
+      <width>731</width>
       <height>101</height>
      </rect>
     </property>

@@ -74,6 +74,31 @@ function _Derivative(func,x) {\
     fx1=func(x-delta);\
     return (fx2-fx1)/(2*delta);\
 }");
+    eng->evaluate("\
+function BSolve(func,a,b) {\
+    if(typeof(func)!=\"function\") {return \"Need a function as first parameter.\";}\
+    var delta=0.0001;\
+    while(Math.abs(b-a) >= delta) {\
+        var c=(a+b)/2;\
+        if( func(a)==0 ) return a;\
+        if( func(b)==0 ) return b;\
+        if(func(a)*func(c)<=0) b=c;\
+        else a=c;}\
+    if(func(a)*func(b)<=0) return (a+b)/2;\
+    else return \"No result!\"\
+}\
+");
+    eng->evaluate("\
+function NSolve(func,a,n) {\
+    if(typeof(func)!=\"function\") {return \"Need a function as first parameter.\";}\
+    if(n==undefined) n=100;\
+    x=a;\
+    for(i=0;i<n;++i) {\
+        k=_Derivative(func,x);\
+        x=x-k*func(x);\
+    }\
+    return x;\
+}");
     eng->evaluate("function _Sigma(func,low,high) { if(typeof(func)!=\"function\") {return \"Need a function as first parameter.\";} var sum=0; low=parseInt(low);high=parseInt(high); for(var i=low;i<=high;++i) {sum+=func(i);} return sum;}");
     eng->evaluate("_pi=Math.PI;_e=Math.E;");
 }

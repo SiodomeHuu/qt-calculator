@@ -48,6 +48,8 @@ const static QMap<QString,QString> helpNote = {
     {"ln(", "ln(b)  equals to log(e,b)"},
     {"pow(", "pow(a,b)  a^b"},
     {"root(", "root(a,b)  equals to pow(a,1/b)"},
+    {"BSolve(","BSolve(¦Ë(x){},a,b) Search result for ¦Ë(x)=0 between a and b Binary."},
+    {"NSolve(","NSolve(¦Ë(x){},a,n=100) Search result for ¦Ë(x)=0 around x=a with Newton Methods, iterate n times."},
 
     {"<-"," _A<-100  assign 100 to _A, and return value 100"},
 
@@ -143,7 +145,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect( ui->pushButton_root, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
     QObject::connect( ui->pushButton_lambda, SIGNAL(clicked()) , this, SLOT(buttonClicked()) );
 
-
+    QObject::connect( ui->pushButton_nsolve,SIGNAL(clicked()),this, SLOT(buttonClicked()));
+    QObject::connect( ui->pushButton_bsolve,SIGNAL(clicked()),this, SLOT(buttonClicked()));
 
 
     //Register
