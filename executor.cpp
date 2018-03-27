@@ -65,7 +65,7 @@ void Executor::initFunc() {
     eng->evaluate("pow=Math.pow; function root(a,b) { return Math.pow(a,1/b); }");
 
 
-    eng->evaluate("function _Calculus(func,low,high,n) { if(typeof(func)!=\"function\") {return \"Need a function as first parameter.\";} if(n==undefined) {n=1000;} sum=0; delt=(high-low)/n; for(var i=low;i<=high;i+=delt) { sum+= func(i)*delt; } return sum;}");
+    eng->evaluate("function _Calculus(func,low,high,n) { if(typeof(func)!=\"function\") {return \"Need a function as first parameter.\";} if(n==undefined) {n=1000;} sum=0; delt=(high-low)/(n-1); for(var i=low;i<high;i+=delt) { sum+= func(i)*delt; } return sum;}");
     eng->evaluate("\
 function _Derivative(func,x) {\
     if(typeof(func)!=\"function\") {return \"Need a function as first parameter.\";}\
@@ -97,6 +97,8 @@ function NSolve(func,a,n) {\
         k=_Derivative(func,x);\
         x=x-k*func(x);\
     }\
+    if( Math.abs(func(x)) > 0.1) {\
+        return \"Can't Solve!\";}\
     return x;\
 }");
     eng->evaluate("function _Sigma(func,low,high) { if(typeof(func)!=\"function\") {return \"Need a function as first parameter.\";} var sum=0; low=parseInt(low);high=parseInt(high); for(var i=low;i<=high;++i) {sum+=func(i);} return sum;}");
