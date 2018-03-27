@@ -15,7 +15,7 @@
 
 
 
-
+// Explaination of some buttons
 const static QMap<QString,QString> helpNote = {
     {"E", "123E4  equals to 123*pow(10,4)"},
     {"Ans","The answer you just got"},
@@ -82,8 +82,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setFixedSize(this->size());
     this->setWindowFlags(windowFlags()&~Qt::WindowMaximizeButtonHint);
 
-
-
+	
+	// RightContext Menu
     ui->outputList->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->outputList->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->outputList->verticalHeader()->setVisible(false);
@@ -98,6 +98,11 @@ MainWindow::MainWindow(QWidget *parent) :
     m_outRight->addAction(m_outTrigger);
     m_outRight->addAction(m_outErase);
 
+	
+	/*
+	 Connect All buttons:
+	*/
+	
     QObject::connect( m_outTrigger, SIGNAL(triggered()),this, SLOT(clearResult())  );
     QObject::connect( m_outErase, SIGNAL(triggered()),this,SLOT(deleteResult())  );
 
@@ -227,6 +232,7 @@ void MainWindow::EvalButtonClicked() {
     QString evalLine = ui->inputLine->text();
     evalLine = evalLine.trimmed();
     if(evalLine=="") return;
+	// Parse special symbol first
     evalLine.replace("¡Ò","_Calculus");
     evalLine.replace("£ä£¯£ä£ø","_Derivative");
     evalLine.replace("¡Æ","_Sigma");
@@ -269,23 +275,26 @@ void MainWindow::EvalButtonClicked() {
 
 
 
-
+// RightContext Menu of the TableWidget
 void MainWindow::on_outputList_customContextMenuRequested(const QPoint &pos) {
     m_outRight->move(cursor().pos());
     m_outRight->show();
 }
 
-
+// After double click on the cell of TableWidget,
+// automatically copy the cell to the inputLine.
 void MainWindow::on_outputList_itemDoubleClicked(QTableWidgetItem *item)
 {
     if(item->text()=="Error!") return;
     ui->inputLine->setText( item->text() );
 }
 
+// Clear All result
 void MainWindow::clearResult() {
     ui->outputList->setRowCount(0);
     ui->outputList->clearContents();
 }
+// Delete one result which is now choosen
 void MainWindow::deleteResult() {
     auto temp=ui->outputList->currentRow();
     if(temp!=-1) {
