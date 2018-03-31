@@ -95,7 +95,7 @@ function NSolve(func,a,n) {\
     x=a;\
     for(i=0;i<n;++i) {\
         k=_Derivative(func,x);\
-        x=x-k*func(x);\
+        x=x-func(x)/k;\
     }\
     if( Math.abs(func(x)) > 0.1) {\
         return \"Can't Solve!\";}\
