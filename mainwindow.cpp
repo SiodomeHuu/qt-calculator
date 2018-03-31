@@ -191,6 +191,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     statusBar()->showMessage("Welcome!");
+    float temp = m_exec->exec("Math.sin(0.5)").toNumber();
+    QString x;
+    x.setNum(temp,'g');
+    statusBar()->showMessage(x);
 }
 
 MainWindow::~MainWindow()

@@ -57,13 +57,20 @@ void Executor::assign(QString name,QJSValue vl) {
 }
 
 void Executor::initFunc() {
-    eng->evaluate("sin=Math.sin;sinh=Math.sinh;asin=Math.asin;asinh=Math.asinh;");
-    eng->evaluate("cos=Math.cos;cosh=Math.cosh;acos=Math.acos;aconh=Math.acosh;");
-    eng->evaluate("tan=Math.tan;tanh=Math.tanh;atan=Math.atan;atanh=Math.atanh;");
+    eng->evaluate("sin=Math.sin;asin=Math.asin;");
+    eng->evaluate("cos=Math.cos;acos=Math.acos;");
+    eng->evaluate("tan=Math.tan;atan=Math.atan;");
+
     eng->evaluate("ln=Math.log;lg=Math.log10;");
     eng->evaluate("function log(a,b) {return Math.log(b)/Math.log(a);}");
     eng->evaluate("pow=Math.pow; function root(a,b) { return Math.pow(a,1/b); }");
 
+    eng->evaluate("function sinh(x) {return (pow(_e,x)-pow(_e,-x))/2;}");
+    eng->evaluate("function cosh(x) {return (pow(_e,x)+pow(_e,-x))/2;}");
+    eng->evaluate("function tanh(x) {return sinh(x)/cosh(x);}");
+    eng->evaluate("function asinh(x) {return ln(x+root(x*x+1,2));}");
+    eng->evaluate("function acosh(x) {return ln(x+root(x*x-1,2));}");
+    eng->evaluate("function atanh(x) {return 1.0/2*ln((1+x)/(1-x));}");
 
     eng->evaluate("function _Calculus(func,low,high,n) { if(typeof(func)!=\"function\") {return \"Need a function as first parameter.\";} if(n==undefined) {n=1000;} sum=0; delt=(high-low)/(n-1); for(var i=low;i<high;i+=delt) { sum+= func(i)*delt; } return sum;}");
     eng->evaluate("\
