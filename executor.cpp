@@ -61,7 +61,7 @@ void Executor::initFunc() {
     eng->evaluate("cos=Math.cos;acos=Math.acos;");
     eng->evaluate("tan=Math.tan;atan=Math.atan;");
 
-    eng->evaluate("ln=Math.log;lg=Math.log10;");
+    eng->evaluate("ln=Math.log;function lg(x) {return Math.log(x)/Math.log(10);}");
     eng->evaluate("function log(a,b) {return Math.log(b)/Math.log(a);}");
     eng->evaluate("pow=Math.pow; function root(a,b) { return Math.pow(a,1/b); }");
 
